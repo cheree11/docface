@@ -26,7 +26,7 @@
 
 <body>
     <nav class="p-3 container navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="https://animalface.site/">의사 관상 테스트</a>
+        <a class="navbar-brand">의사 관상 테스트</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -75,8 +75,6 @@
         </div>
         <div class="file-upload-content">
             <img class="file-upload-image" id="face-image" src="#" alt="your image" />
-			<p class="result-message">
-			</p>
             <div id="loading" class="animated bounce">
                 <div class="spinner-border" role="status">
                     <span class="sr-only">Loading...</span>
@@ -118,7 +116,7 @@
     // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
 
     // the link to your model provided by Teachable Machine export panel
-    const URL = "https://teachablemachine.withgoogle.com/models/oNImiMmD-/";
+    const URL = "https://teachablemachine.withgoogle.com/models/6xao4UczH/";
 
     let model, webcam, labelContainer, maxPredictions;
 
@@ -138,43 +136,86 @@
 
         // append elements to the DOM
 
-        labelContainer = document.getElementById("label-container");
+         labelContainer = document.getElementById("label-container");
         for (let i = 0; i < maxPredictions; i++) { // and class labels
             labelContainer.appendChild(document.createElement("div"));
         }
     }
-
 
     // run the webcam image through the image model
     async function predict() {
         // predict can take in an image, video or canvas html element
 		var image = document.getElementById("face-image")
         const prediction = await model.predict(image,false);
-		prediction.sort((a,b) => parseFloat(b.probability) - parseFloat(b.probability));
+		prediction.sort((a,b) => parseFloat(b.probability) - parseFloat(a.probability));
 		console.log(prediction[0].className);
 		var resultMessage;
 		switch (prediction[0].className) {
-			case "im":
-				resultMessage = "내과 참의사"
+			case "가정의학과":
+				resultMessage = "FM"
 				break;
-			case "fm":
-				resultMessage = "비즈니스맨"
+			case "내과":
+				resultMessage = "IM"
+				break;
+			case "비뇨의학과":
+				resultMessage = "URO"
+				break;
+			case "마취통증의학과":
+				resultMessage = "ANES"
+				break;
+			case "산부인과":
+				resultMessage = "OBGY"
+				break;
+			case "소아청소년과":
+				resultMessage = "PED"
+				break;
+			case "성형외과":
+				resultMessage = "PS"
+				break;
+			case "신경외과":
+				resultMessage = "NS"
+				break;
+			case "안과":
+				resultMessage = "OPH"
+				break;
+			case "영상의학과":
+				resultMessage = "RAD"
+				break;
+			case "응급의학과":
+				resultMessage = "EM"
+				break;
+			case "이비인후과":
+				resultMessage = "ENT"
+				break;
+			case "재활의학과":
+				resultMessage = "RM"
+				break;
+			case "정신건강의학과":
+				resultMessage = "PSY"
+				break;
+			case "정형외과":
+				resultMessage = "OS"
+				break;
+			case "일반외과":
+				resultMessage = "GS"
+				break;
+			case "피부과":
+				resultMessage = "DR"
 				break;
 			default:
 				resultMessage = "알수없음"
 		}
 		$('.result-message').html(resultMessage);
-		
-		
-		
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
+		for (let i = 0; i < maxPredictions; i++) {
+		const classPrediction =
                 prediction[i].className + ": " + prediction[i].probability.toFixed(2);
             labelContainer.childNodes[i].innerHTML = classPrediction;
         }
     }
+	
 </script>
-		<script>function readURL(input) {
+		
+<script>function readURL(input) {
   if (input.files && input.files[0]) {
 
     var reader = new FileReader();
@@ -188,7 +229,8 @@
       $('.image-title').html(input.files[0].name);
     };
 
-    reader.readAsDataURL(input.files[0]);
+
+	  reader.readAsDataURL(input.files[0]);
 	init().then(()=>{
 		console.log("hello");
 		predict();
